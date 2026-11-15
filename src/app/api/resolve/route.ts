@@ -7,7 +7,6 @@ const RPC_URL = "https://api.mainnet-beta.solana.com";
 const connection = new Connection(RPC_URL, { commitment: "confirmed" });
 const TEOS_PROGRAM_ID = new PublicKey("H7TajhCaofXSZ4MAsxmAArCet77yoAeWx878XaZDBDLN");
 
-// Fail-closed source of truth when RPC lies or rate-limits
 const GENESIS_MINTED = new Set([
   "ayman","elmahrosa","ahmed","amira","anas","ehab","ekram",
   "lareen","layan","rovan","salma","soha","sohayb",
@@ -18,7 +17,6 @@ export async function GET(req: Request) {
   const base = domain.replace(".teos", "").replace(".eg", "");
   if (!base) return NextResponse.json({ exists: false, reason: "empty" });
 
-  // 1) Live PDA derivation + on-chain truth
   try {
     const [pda] = PublicKey.findProgramAddressSync(
       [Buffer.from("teos"), Buffer.from(base)],
@@ -30,10 +28,9 @@ export async function GET(req: Request) {
     }
     return NextResponse.json({ exists: false, pda: pda.toBase58() });
   } catch (e) {
-    console.warn("[TEOS] RPC/PDA failed — falling back to Genesis registry:", (e as Error).message);
+    console.warn("[TEOS] RPC/PDA failed - falling back to Genesis registry");
   }
 
-  // 2) Fail-closed fallback: registry is the law when the network lies
   if (GENESIS_MINTED.has(base)) {
     return NextResponse.json({ exists: true, owner: "Registry Verified (Genesis)" });
   }
