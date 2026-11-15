@@ -1,28 +1,23 @@
 "use client";
-import { useState, useMemo } from "react";
-import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
-import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { useState } from "react";
 import { resolveTeosName } from "@/lib/sovereign-resolver";
 import { NAMESPACES, REGION_PRICES, type Region } from "@/lib/namespaces";
-import "@solana/wallet-adapter-react-ui/styles.css";
 
-const RPC_URL = "https://api.mainnet-beta.solana.com";
 const TIERS = ["1 char", "2 chars", "3 chars", "4 chars", "5+ chars"];
 
-function GatewayInner() {
-  const { connected } = useWallet();
+export default function Home() {
   const [name, setName] = useState("");
   const [code, setCode] = useState("eg");
   const [status, setStatus] = useState("");
   const [checkout, setCheckout] = useState(false);
+  const [connected, setConnected] = useState(false);
 
-  const selected = NAMESPACES.find((n) => n.code === code)!;
+  const selected = NAMESPACES.find((n) => n.code === code) || NAMESPACES[0];
   const prices = REGION_PRICES[selected.region as Region];
 
   const onSearch = async () => {
     if (!name) return;
-    setStatus("CHECKING");
+    setStatus("CHECKING...");
     const r = await resolveTeosName(name + ".teos");
     if (r.exists) { setStatus("TAKEN"); setCheckout(false); }
     else { setStatus("AVAILABLE"); if (connected) setCheckout(true); }
@@ -30,8 +25,15 @@ function GatewayInner() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <div className="fixed top-4 right-4 z-50">
+        <button onClick={() => setConnected((c) => !c)}
+          className="bg-amber-600 text-black font-bold px-4 py-2 rounded">
+          {connected ? "Demo Wallet Connected" : "Connect Wallet (Demo)"}
+        </button>
+      </div>
+
       <div className="bg-gradient-to-r from-emerald-700 to-red-700 text-center py-2 text-xs tracking-widest">
-        LIVE FROM ALEXANDRIA - 126 NAMESPACES REGISTERED  13 MINTED
+        LIVE FROM ALEXANDRIA - 126 NAMESPACES REGISTERED - 13 MINTED
       </div>
 
       <div className="px-6 pt-12 text-center">
@@ -43,7 +45,7 @@ function GatewayInner() {
             placeholder="Search your name"
             className="w-full p-3 text-black rounded mb-4 bg-[#e8dcc0] font-semibold" />
           <select value={code} onChange={(e) => setCode(e.target.value)}
-            className="w-full p-2 mb-4 bg-[#1c1a16] text-white rounded border border-slate-700 max-h-64">
+            className="w-full p-2 mb-4 bg-[#1c1a16] text-white rounded border border-slate-700">
             {NAMESPACES.map((n) => (
               <option key={n.code} value={n.code}>{n.flag} {n.name} (.{n.code})</option>
             ))}
@@ -55,7 +57,7 @@ function GatewayInner() {
           </button>
           <p className="mt-4 text-center text-amber-500 font-semibold">{status}</p>
           {status === "AVAILABLE" && !connected && (
-            <p className="mt-2 text-center text-xs text-slate-400">Connect wallet to open checkout.</p>
+            <p className="mt-2 text-center text-xs text-slate-400">Connect (demo) to open checkout.</p>
           )}
         </div>
 
@@ -73,7 +75,7 @@ function GatewayInner() {
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
           <div className="bg-[#12100c] border border-amber-700/60 rounded p-8 max-w-sm w-full">
             <h3 className="text-amber-500 tracking-widest mb-6 text-center">
-              CHECKOUT  {selected.flag} .{selected.code.toUpperCase()} ({selected.region})
+              CHECKOUT - {selected.flag} .{selected.code.toUpperCase()} ({selected.region})
             </h3>
             <div className="space-y-3 mb-6">
               {TIERS.map((t, i) => (
@@ -83,37 +85,21 @@ function GatewayInner() {
               ))}
             </div>
             <button onClick={() => setCheckout(false)} className="w-full bg-amber-600 text-black font-bold py-3 rounded">
-              Proceed to Wallet Connect
+              Confirm (Demo)
             </button>
           </div>
         </div>
       )}
 
       <footer className="mt-20 px-6 py-12 text-center text-xs text-slate-500 border-t border-amber-700/30">
-        <p className="text-amber-500 tracking-widest mb-4">FOUNDER TEOS  ALEXANDRIA EGYPT</p>
+        <p className="text-amber-500 tracking-widest mb-4">FOUNDER TEOS - ALEXANDRIA EGYPT</p>
         <p className="max-w-2xl mx-auto leading-relaxed mb-4">
           TEOS names are digital identities inside the TEOS system on Solana. They are not internet TLDs,
           not the official domains of any country or government entity, and have no affiliation with ICANN
           or any national registry. Country codes such as .EG are internal namespace labels within TEOS only.
         </p>
-        <p> 2026 Elmahrosa International  elmahrosa.org</p>
+        <p>(c) 2026 Elmahrosa International - elmahrosa.org</p>
       </footer>
     </div>
-  );
-}
-
-export default function Home() {
-  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
-  return (
-    <ConnectionProvider endpoint={RPC_URL}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <div className="fixed top-4 right-4 z-50">
-            <WalletMultiButton className="!bg-amber-600" />
-          </div>
-          <GatewayInner />
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
   );
 }
