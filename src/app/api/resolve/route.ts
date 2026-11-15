@@ -11,28 +11,25 @@ const GENESIS_MINTED = new Set([
 ]);
 
 export async function GET(req: Request) {
-  console.log("[TEOS] Resolver called for:", req.url);
   const domain = (new URL(req.url).searchParams.get("domain") || "").toLowerCase().trim();
   const base = domain.replace(".teos", "").replace(".eg", "");
   if (!base) return NextResponse.json({ exists: false, reason: "empty" });
 
+  let liveExists = false;
+  let derivedPda = "";
   try {
     const [pda] = PublicKey.findProgramAddressSync(
       [Buffer.from("teos"), Buffer.from(base)],
       TEOS_PROGRAM_ID
     );
-    console.log("[TEOS] Derived PDA:", pda.toBase58());
+    derivedPda = pda.toBase58();
     const info = await connection.getAccountInfo(pda);
-    if (info && info.data && info.data.length > 0) {
-      return NextResponse.json({ exists: true, owner: "Verified on Solana Mainnet", pda: pda.toBase58() });
-    }
-    return NextResponse.json({ exists: false, pda: pda.toBase58() });
+    liveExists = !!(info && info.data && info.data.length > 0);
   } catch (e: any) {
-    console.error("[TEOS] PDA Error Details:", e.message || e);
+    console.error("[TEOS] PDA Error:", e.message || e);
   }
 
-  if (GENESIS_MINTED.has(base)) {
-    return NextResponse.json({ exists: true, owner: "Registry Verified (Genesis)" });
-  }
-  return NextResponse.json({ exists: false, reason: "rpc-unreachable" });
+  if (liveExists) return NextResponse.json({ exists: true, owner: "Verified on Solana Mainnet", pda: derivedPda });
+  if (GENESIS_MINTED.has(base)) return NextResponse.json({ exists: true, owner: "Registry Verified (Genesis)", pda: derivedPda });
+  return NextResponse.json({ exists: false, pda: derivedPda });
 }
