@@ -1,69 +1,119 @@
-import Image from "next/image";
+"use client";
+import { useState, useMemo } from "react";
+import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
+import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { resolveTeosName } from "@/lib/sovereign-resolver";
+import { NAMESPACES, REGION_PRICES, type Region } from "@/lib/namespaces";
+import "@solana/wallet-adapter-react-ui/styles.css";
+
+const RPC_URL = "https://api.mainnet-beta.solana.com";
+const TIERS = ["1 char", "2 chars", "3 chars", "4 chars", "5+ chars"];
+
+function GatewayInner() {
+  const { connected } = useWallet();
+  const [name, setName] = useState("");
+  const [code, setCode] = useState("eg");
+  const [status, setStatus] = useState("");
+  const [checkout, setCheckout] = useState(false);
+
+  const selected = NAMESPACES.find((n) => n.code === code)!;
+  const prices = REGION_PRICES[selected.region as Region];
+
+  const onSearch = async () => {
+    if (!name) return;
+    setStatus("CHECKING");
+    const r = await resolveTeosName(name + ".teos");
+    if (r.exists) { setStatus("TAKEN"); setCheckout(false); }
+    else { setStatus("AVAILABLE"); if (connected) setCheckout(true); }
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <div className="bg-gradient-to-r from-emerald-700 to-red-700 text-center py-2 text-xs tracking-widest">
+        LIVE FROM ALEXANDRIA - 126 NAMESPACES REGISTERED  13 MINTED
+      </div>
+
+      <div className="px-6 pt-12 text-center">
+        <h1 className="text-4xl text-amber-500 font-bold tracking-wider">TEOS SOVEREIGN ROOT</h1>
+        <p className="text-slate-300 mt-4">yourname.teos is your root key. Country namespaces open soon.</p>
+
+        <div className="max-w-md mx-auto mt-10 border border-amber-700/50 bg-[#12100c] rounded p-6">
+          <input value={name} onChange={(e) => setName(e.target.value)}
+            placeholder="Search your name"
+            className="w-full p-3 text-black rounded mb-4 bg-[#e8dcc0] font-semibold" />
+          <select value={code} onChange={(e) => setCode(e.target.value)}
+            className="w-full p-2 mb-4 bg-[#1c1a16] text-white rounded border border-slate-700 max-h-64">
+            {NAMESPACES.map((n) => (
+              <option key={n.code} value={n.code}>{n.flag} {n.name} (.{n.code})</option>
+            ))}
+          </select>
+
+          <button onClick={onSearch}
+            className="w-full bg-gradient-to-b from-amber-500 to-amber-700 text-black font-bold p-3 rounded">
+            Reserve Your Name
+          </button>
+          <p className="mt-4 text-center text-amber-500 font-semibold">{status}</p>
+          {status === "AVAILABLE" && !connected && (
+            <p className="mt-2 text-center text-xs text-slate-400">Connect wallet to open checkout.</p>
+          )}
+        </div>
+
+        <div className="max-w-md mx-auto mt-10 border-2 border-amber-600 rounded p-6 bg-[#12100c]">
+          <h3 className="text-amber-500 text-2xl tracking-widest text-center mb-6">TEOS ROOT</h3>
+          {[["1 char","$2,000"],["2 chars","$600"],["3 chars","$180"],["4 chars","$80"],["5+ chars","$30"]].map((t,i)=>(
+            <div key={i} className="flex justify-between border-b border-slate-800 py-3">
+              <span className="text-slate-300">{t[0]}</span><span className="text-amber-400 font-bold">{t[1]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {checkout && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#12100c] border border-amber-700/60 rounded p-8 max-w-sm w-full">
+            <h3 className="text-amber-500 tracking-widest mb-6 text-center">
+              CHECKOUT  {selected.flag} .{selected.code.toUpperCase()} ({selected.region})
+            </h3>
+            <div className="space-y-3 mb-6">
+              {TIERS.map((t, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span>{t}</span><span className="text-amber-400">${prices[i].toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setCheckout(false)} className="w-full bg-amber-600 text-black font-bold py-3 rounded">
+              Proceed to Wallet Connect
+            </button>
+          </div>
+        </div>
+      )}
+
+      <footer className="mt-20 px-6 py-12 text-center text-xs text-slate-500 border-t border-amber-700/30">
+        <p className="text-amber-500 tracking-widest mb-4">FOUNDER TEOS  ALEXANDRIA EGYPT</p>
+        <p className="max-w-2xl mx-auto leading-relaxed mb-4">
+          TEOS names are digital identities inside the TEOS system on Solana. They are not internet TLDs,
+          not the official domains of any country or government entity, and have no affiliation with ICANN
+          or any national registry. Country codes such as .EG are internal namespace labels within TEOS only.
+        </p>
+        <p> 2026 Elmahrosa International  elmahrosa.org</p>
+      </footer>
+    </div>
+  );
+}
 
 export default function Home() {
+  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <ConnectionProvider endpoint={RPC_URL}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <div className="fixed top-4 right-4 z-50">
+            <WalletMultiButton className="!bg-amber-600" />
+          </div>
+          <GatewayInner />
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
   );
 }
