@@ -11,6 +11,7 @@ const GENESIS_MINTED = new Set([
 ]);
 
 export async function GET(req: Request) {
+  console.log("[TEOS] Resolver called for:", req.url);
   const domain = (new URL(req.url).searchParams.get("domain") || "").toLowerCase().trim();
   const base = domain.replace(".teos", "").replace(".eg", "");
   if (!base) return NextResponse.json({ exists: false, reason: "empty" });
@@ -20,13 +21,14 @@ export async function GET(req: Request) {
       [Buffer.from("teos"), Buffer.from(base)],
       TEOS_PROGRAM_ID
     );
+    console.log("[TEOS] Derived PDA:", pda.toBase58());
     const info = await connection.getAccountInfo(pda);
-    if (info && info.data.length > 0) {
+    if (info && info.data && info.data.length > 0) {
       return NextResponse.json({ exists: true, owner: "Verified on Solana Mainnet", pda: pda.toBase58() });
     }
     return NextResponse.json({ exists: false, pda: pda.toBase58() });
-  } catch (e) {
-    console.warn("[TEOS] RPC/PDA failed - falling back to Genesis registry");
+  } catch (e: any) {
+    console.error("[TEOS] PDA Error Details:", e.message || e);
   }
 
   if (GENESIS_MINTED.has(base)) {
