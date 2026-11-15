@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏛️ TEOS Identity Gateway
 
-## Getting Started
+![Status](https://img.shields.io/badge/Status-Private%20Pre--Launch-red?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Elmahrosa%20Proprietary-orange?style=for-the-badge)
+![Built In](https://img.shields.io/badge/Built%20In-Alexandria%2C%20Egypt-0a0a0a?style=for-the-badge)
+![Network](https://img.shields.io/badge/Network-Solana%20Mainnet-9945FF?style=for-the-badge)
+![Governance](https://img.shields.io/badge/Governance-Law%20Over%20Code-amber?style=for-the-badge)
+![Protection](https://img.shields.io/badge/Sentinel-290%20Rules%20PASS-green?style=for-the-badge)
 
-First, run the development server:
+**The Sovereign Frontend for Web4.**
+*Built in Alexandria. Engineered for the World.*
+
+> **Core Principle:** Law over Code. Human authority and institutional sovereignty over autonomous execution.
+
+## 📜 Overview
+
+TEOS is not an internet TLD. It is a **sovereign digital identity system** built on Solana (Metaplex Core).
+
+This repository contains the **TEOS Identity Gateway** — the resolution layer and storefront where users claim their root keys (`.teos`) and unlock country namespaces (`.eg`, `.sa`, `.us`, etc.). It serves as the primary interface for the Genesis drop and the future sovereign profile ecosystem.
+
+## 🧭 Genesis Status
+
+- **126 Namespaces Registered** (Global sovereign map)
+- **13 Minted in Genesis** (Root keys + Founder nodes)
+- **Status:** Private / Pre-Launch
+
+## 🛠️ Architecture & Stack
+
+- **Frontend:** Next.js 16 (Turbopack), TypeScript, Tailwind CSS
+- **Blockchain:** Solana Mainnet, Metaplex Core cNFTs
+- **Wallet Integration:** Phantom, Solflare (via `@solana/wallet-adapter`)
+- **Governance:** Enforced by the `teos-governance` Rust kernel (PII redaction, fail-closed audit chains).
+- **Protection:** Sentinel.teosegypt.com
+- **Web4:** Web4.elmahrosa.org
+
+## 🚀 Local Development
 
 ```bash
+npm install --legacy-peer-deps
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open [http://localhost:3000](http://localhost:3000) to access the gateway.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔒 Security & Compliance
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- *Private Repository:* This codebase contains sovereign infrastructure logic. Do not fork or distribute without authorization.
+- *Audit Trail:* All identity resolutions and minting events are cryptographically chained.
+- *Legal Disclaimer:* TEOS names are digital identities inside the TEOS system on Solana. They are *not* internet TLDs, not the official domains of any country or government entity, and have no affiliation with ICANN or any national registry. Country codes such as `.EG` are internal namespace labels within TEOS only.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📜 Elmahrosa License
 
-## Learn More
+*Copyright © 2026 Elmahrosa International. All Rights Reserved.*
 
-To learn more about Next.js, take a look at the following resources:
+This software and all associated documentation, branding, and infrastructure designs are the exclusive proprietary property of *Elmahrosa International*, Alexandria, Egypt.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  *No Use Without License:* No person or entity may copy, fork, modify, distribute, deploy, or use this code, in whole or in part, without prior written authorization from Elmahrosa International.
+2.  *No Redistribution:* Redistribution, public mirroring, or sublicensing is strictly prohibited.
+3.  *Agents Only:* Only authorized TEOS Country Agents, under a signed agreement with Elmahrosa International, may deploy or represent this system in their territory.
+4.  *Ownership:* All TEOS names, Sentinel rules, and Web4 protocols remain the property of Elmahrosa International.
+5.  *Violation:* Unauthorized use will result in immediate revocation of access and legal action under Egyptian law.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+For licensing and Country Agent inquiries, contact Elmahrosa International.
 
-## Deploy on Vercel
+## 📍 Origin
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+*Founder:* Ayman Seif
+*Location:* Alexandria, Egypt (Dig Site 022)
+*Organization:* Elmahrosa International
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+© 2026 TEOS Sovereign Root. All rights reserved.
