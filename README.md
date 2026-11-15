@@ -1,5 +1,7 @@
 # 🏛️ TEOS Identity Gateway
 
+<div align="center">
+
 ![Status](https://img.shields.io/badge/Status-Private%20Pre--Launch-red?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Elmahrosa%20Proprietary-orange?style=for-the-badge)
 ![Built In](https://img.shields.io/badge/Built%20In-Alexandria%2C%20Egypt-0a0a0a?style=for-the-badge)
@@ -9,6 +11,8 @@
 
 **The Sovereign Frontend for Web4.**
 *Built in Alexandria. Engineered for the World.*
+
+</div>
 
 > **Core Principle:** Law over Code. Human authority and institutional sovereignty over autonomous execution.
 
