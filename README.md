@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Status](https://img.shields.io/badge/Status-Private%20Pre--Launch-red?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Hackathon%20Live-green?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Elmahrosa%20Proprietary-orange?style=for-the-badge)
 ![Built In](https://img.shields.io/badge/Built%20In-Alexandria%2C%20Egypt-0a0a0a?style=for-the-badge)
 ![Network](https://img.shields.io/badge/Network-Solana%20Mainnet-9945FF?style=for-the-badge)

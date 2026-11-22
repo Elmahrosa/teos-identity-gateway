@@ -28,12 +28,12 @@ export default function Home() {
       <div className="fixed top-4 right-4 z-50">
         <button onClick={() => setConnected((c) => !c)}
           className="bg-amber-600 text-black font-bold px-4 py-2 rounded">
-          {connected ? "Demo Wallet Connected" : "Connect Wallet (Demo)"}
+          {connected ? "Wallet Connected" : "Connect Wallet"}
         </button>
       </div>
 
       <div className="bg-gradient-to-r from-emerald-700 to-red-700 text-center py-2 text-xs tracking-widest">
-        LIVE FROM ALEXANDRIA - 126 NAMESPACES REGISTERED - 13 MINTED
+        LIVE FROM ALEXANDRIA · TEOS IDENTITY GATEWAY
       </div>
 
       <div className="px-6 pt-12 text-center">
@@ -57,7 +57,7 @@ export default function Home() {
           </button>
           <p className="mt-4 text-center text-amber-500 font-semibold">{status}</p>
           {status === "AVAILABLE" && !connected && (
-            <p className="mt-2 text-center text-xs text-slate-400">Connect (demo) to open checkout.</p>
+            <p className="mt-2 text-center text-xs text-slate-400">Connect your wallet to continue.</p>
           )}
         </div>
 
@@ -85,7 +85,7 @@ export default function Home() {
               ))}
             </div>
             <button onClick={() => setCheckout(false)} className="w-full bg-amber-600 text-black font-bold py-3 rounded">
-              Confirm (Demo)
+              Submit Reservation Request
             </button>
           </div>
         </div>
